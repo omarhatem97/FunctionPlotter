@@ -5,12 +5,16 @@ def parse_equation(equation):
     currentNum = ""
     currentPower = "0"
     readingNum = True
-    nextNumSign = '+'
+    nextNumSign = '-' if equation[0] == '-' else '+'
     numerator = ""
-    denomenator = ""
     divisionFlag = False
+    i = 0
 
-    for i in range(len(equation)):
+    while i < len(equation):
+        if nextNumSign == '-' and i == 0:
+            i+=1
+            continue
+
         current = equation[i]
 
         if is_num(current):
@@ -28,6 +32,8 @@ def parse_equation(equation):
             currentPower = "0"
             nextNumSign = '+'
             readingNum = True
+            divisionFlag = False
+            numerator = ""
 
         elif current == '-':
             if divisionFlag:
@@ -45,6 +51,8 @@ def parse_equation(equation):
             numerator = ""
 
         elif current == '^':
+            if equation[i + 1] == '-':
+                i += 2
             readingNum = False
 
         elif current == '/':
@@ -55,6 +63,7 @@ def parse_equation(equation):
             continue
         else:
             return "Invalid"
+        i += 1
 
     if readingNum:
         if divisionFlag:
@@ -73,4 +82,4 @@ def is_num(input):
 
 
 if __name__ == '__main__':
-    print(parse_equation("2/3x^2 -  3/2"))
+    print(parse_equation("-2/3x^-2 - 3/2"))
