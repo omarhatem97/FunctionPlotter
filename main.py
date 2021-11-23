@@ -6,13 +6,14 @@ def parse_equation(equation):
     currentPower = "0"
     readingNum = True
     nextNumSign = '-' if equation[0] == '-' else '+'
+    nextPowerSign = '+'
     numerator = ""
     divisionFlag = False
     i = 0
 
     while i < len(equation):
         if nextNumSign == '-' and i == 0:
-            i+=1
+            i += 1
             continue
 
         current = equation[i]
@@ -24,10 +25,8 @@ def parse_equation(equation):
                 currentPower += current
 
         elif current == '+':
-            if nextNumSign == '+':
-                parsedEquation.append((float(currentNum), float(currentPower)))
-            else:
-                parsedEquation.append((-float(currentNum), float(currentPower)))
+
+            parsedEquation.append([float(nextNumSign + currentNum), float(nextPowerSign + currentPower)])
             currentNum = ""
             currentPower = "0"
             nextNumSign = '+'
@@ -36,13 +35,9 @@ def parse_equation(equation):
             numerator = ""
 
         elif current == '-':
-            if divisionFlag:
-                currentNum = float(numerator) / float(currentNum)
-
-            if nextNumSign == '+':
-                parsedEquation.append((float(currentNum), float(currentPower)))
-            else:
-                parsedEquation.append((-float(currentNum), float(currentPower)))
+            coeff = nextNumSign + currentNum
+            power = nextPowerSign + currentPower
+            parsedEquation.append((float(coeff), float(power)))
             currentNum = ""
             currentPower = "0"
             nextNumSign = '-'
@@ -52,7 +47,8 @@ def parse_equation(equation):
 
         elif current == '^':
             if equation[i + 1] == '-':
-                i += 2
+                nextPowerSign = '-'
+                i += 1
             readingNum = False
 
         elif current == '/':
@@ -60,6 +56,10 @@ def parse_equation(equation):
             numerator += currentNum
             currentNum = ""
         elif current == 'x' or current == 'X':
+            if divisionFlag:
+                currentNum = str(float(numerator) / float(currentNum))
+            i += 1
+            divisionFlag = False
             continue
         else:
             return "Invalid"
@@ -82,4 +82,4 @@ def is_num(input):
 
 
 if __name__ == '__main__':
-    print(parse_equation("-2/3x^-2 - 3/2"))
+    print(parse_equation("-2/3x^-2 + 3/2 - 1"))
