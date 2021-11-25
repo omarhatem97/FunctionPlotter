@@ -82,4 +82,5 @@ def is_num(input):
 
 
 if __name__ == '__main__':
-    print(parse_equation("-2/3x^-2 + 3/2 - 1"))
+    # print(parse_equation("-2/3x^-2 + 3/2x^2"))
+    print(eval("10/2 +3/2"))
